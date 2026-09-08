@@ -16,7 +16,6 @@ export default function BoasVindasScreen() {
           source={require("@/assets/images/logo_flui.svg")}
           style={styles.logo}
         />
-        <Text style={styles.title}>Tenha sempre energia!</Text>
         <Button
           label="Começar"
           onPress={() => router.replace("/(tabs)/home")}
@@ -34,10 +33,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   logo: {
-    height: 100,
-    marginBottom: Spacing.md,
-    width: 210,
-  },
+  height: 100,
+  width: 168,
+  marginBottom: Spacing.md,
+},
   safeArea: {
     backgroundColor: FluiColors.background,
     flex: 1,

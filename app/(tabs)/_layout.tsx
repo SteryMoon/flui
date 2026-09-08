@@ -11,11 +11,7 @@ import Animated, {
 
 import { FluiColors, FluiFonts, Motion } from "@/constants/theme";
 
-/**
- * Ícone da aba com dois sinais de estado ao mesmo tempo:
- * o ícone preenchido e um ponto que cresce embaixo. Assim a aba ativa
- * continua identificável para quem não distingue as cores.
- */
+
 function TabIcon({
   name,
   color,

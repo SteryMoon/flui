@@ -1,18 +1,11 @@
 import type { AmenityKey, ConnectorType } from "@/mocks/station";
 
-/** Estado completo dos filtros de busca. */
 export type StationFilters = {
-  /** Conectores aceitos (OU entre eles). Vazio = qualquer conector. */
   connectors: ConnectorType[];
-  /** Potência mínima em kW. null = qualquer potência. */
   minPowerKw: number | null;
-  /** Comodidades exigidas (E entre elas). */
   amenities: AmenityKey[];
-  /** Só pontos abertos neste momento. */
   onlyOpenNow: boolean;
-  /** Só pontos que funcionam 24 horas. */
   only24h: boolean;
-  /** Só pontos com pelo menos um carregador livre. */
   onlyAvailable: boolean;
 };
 
@@ -49,7 +42,6 @@ export const AMENITY_OPTIONS: { value: AmenityKey; label: string }[] = [
   { value: "acessivel", label: "Acesso adaptado" },
 ];
 
-/** Quantos filtros o usuário ativou — vira o número na bolinha do botão "Filtrar". */
 export function countActiveFilters(filters: StationFilters): number {
   return (
     filters.connectors.length +
@@ -61,7 +53,6 @@ export function countActiveFilters(filters: StationFilters): number {
   );
 }
 
-/** Alterna um valor dentro de uma lista de seleção múltipla. */
 export function toggleInList<T>(list: T[], value: T): T[] {
   return list.includes(value) ? list.filter((item) => item !== value) : [...list, value];
 }

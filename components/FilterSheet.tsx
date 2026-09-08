@@ -44,14 +44,12 @@ export function FilterSheet({
   const insets = useSafeAreaInsets();
   const reduzirMovimento = useReducedMotion();
 
-  // Rascunho: o usuário mexe à vontade e só confirma no botão final.
   const [draft, setDraft] = useState<StationFilters>(filters);
 
   useEffect(() => {
     if (visible) setDraft(filters);
   }, [visible, filters]);
 
-  // Prévia ao vivo de quantos pontos sobrariam com esses filtros.
   const previewCount = useMemo(
     () => applyFilters(stationsMock, draft, query).length,
     [draft, query],
@@ -210,7 +208,6 @@ export function FilterSheet({
   );
 }
 
-/* -------------------------------------------------------------------------- */
 
 function Section({
   title,
@@ -261,7 +258,6 @@ function ToggleRow({
   );
 }
 
-/* -------------------------------------------------------------------------- */
 
 const styles = StyleSheet.create({
   applyButton: {

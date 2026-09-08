@@ -1,18 +1,11 @@
-import { ImageSourcePropType } from "react-native";
+import type { ImageSourcePropType } from "react-native";
 
-/* -------------------------------------------------------------------------- */
-/* Tipos                                                                      */
-/* -------------------------------------------------------------------------- */
-
-/** Padrões de conector usados no Brasil. */
 export type ConnectorType = "CCS2" | "CHAdeMO" | "Type2" | "GBT";
 
-/** Corrente alternada (mais lenta) ou contínua (recarga rápida). */
 export type CurrentType = "AC" | "DC";
 
 export type ChargerStatus = "livre" | "ocupado" | "manutencao";
 
-/** Chaves de comodidade — as mesmas usadas nos filtros de busca. */
 export type AmenityKey =
   | "banheiro"
   | "wifi"
@@ -30,7 +23,6 @@ export type Charger = {
   status: ChargerStatus;
 };
 
-/** Comodidade real por perto, com a distância a pé em metros. */
 export type NearbyPlace = {
   name: string;
   amenity: AmenityKey;
@@ -41,7 +33,6 @@ export type OpeningHours = {
   is24h: boolean;
   opensAt: string;
   closesAt: string;
-  /** Dias em que abre (0 = domingo, igual ao getDay do JavaScript). */
   weekdays: number[];
 };
 
@@ -53,19 +44,15 @@ export type Coordinates = {
 export type Station = {
   id: string;
   name: string;
-  /** Título completo exibido na ficha. */
   title: string;
   address: string;
   location: string;
   coordinates: Coordinates;
   photo: ImageSourcePropType;
-  /** Fotos extras do ponto — alimentam o carrossel da ficha. */
   photos: ImageSourcePropType[];
-  /** Ponto patrocinado aparece com destaque âmbar no mapa e na lista. */
   sponsored: boolean;
   rating: number;
   reviewsCount: number;
-  /** Preço do kWh em reais. */
   priceKwh: number;
   distanceKm: number;
   etaMinutes: number;
@@ -75,14 +62,9 @@ export type Station = {
   accessibility: string[];
   paymentMethods: string[];
   openingHours: OpeningHours;
-  /** Movimento estimado de 0 a 100 para cada hora do dia (24 posições). */
   busyByHour: number[];
   about: string;
 };
-
-/* -------------------------------------------------------------------------- */
-/* Rótulos                                                                    */
-/* -------------------------------------------------------------------------- */
 
 export const CONNECTOR_LABELS: Record<ConnectorType, string> = {
   CCS2: "CCS Tipo 2",
@@ -101,7 +83,6 @@ export const AMENITY_LABELS: Record<AmenityKey, string> = {
   acessivel: "Acesso adaptado",
 };
 
-/** Ícone do MaterialCommunityIcons para cada comodidade. */
 export const AMENITY_ICONS: Record<AmenityKey, string> = {
   banheiro: "toilet",
   wifi: "wifi",
@@ -114,10 +95,6 @@ export const AMENITY_ICONS: Record<AmenityKey, string> = {
 
 const TODOS_OS_DIAS = [0, 1, 2, 3, 4, 5, 6];
 const DIAS_UTEIS = [1, 2, 3, 4, 5];
-
-/* -------------------------------------------------------------------------- */
-/* Dados simulados                                                            */
-/* -------------------------------------------------------------------------- */
 
 export const stationsMock: Station[] = [
   {
@@ -386,7 +363,6 @@ export const stationsMock: Station[] = [
   },
 ];
 
-/** Busca um ponto pelo id — usado pela ficha detalhada. */
 export function getStationById(id?: string | null): Station | undefined {
   if (!id) return undefined;
   return stationsMock.find((station) => station.id === id);

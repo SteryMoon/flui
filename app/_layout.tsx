@@ -62,7 +62,6 @@ export default function RootLayout() {
           <Stack
             screenOptions={{
               headerShown: false,
-              // Deslizar entre telas mantém a continuidade do motion design.
               animation: "slide_from_right",
               contentStyle: { backgroundColor: FluiColors.background },
             }}

@@ -11,10 +11,7 @@ import Animated, {
 
 import { BorderRadius, FluiColors, Spacing } from "@/constants/theme";
 
-/**
- * Esqueleto exibido enquanto a busca "carrega".
- * Sem o brilho pulsante quando o sistema pede menos movimento.
- */
+
 export function StationCardSkeleton() {
   const progress = useSharedValue(0.4);
   const reduzirMovimento = useReducedMotion();

@@ -1,7 +1,4 @@
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
- */
+
 
 import { Platform } from "react-native";
 
@@ -9,48 +6,47 @@ const tintColorLight = "#0a7ea4";
 const tintColorDark = "#fff";
 
 export const BrandColors = {
-  background: "#302f2e",
+  background: "#0e1b22",
   text: "#ffffff",
-  mutedText: "#b9b7b7",
-  border: "#dedede",
-  inputText: "#505050",
-  primary: "#b747f8",
-  primaryDark: "#511288",
+  mutedText: "#9fb3bd",
+  border: "#d7e2e8",
+  inputText: "#3a4a52",
+  primary: "#157bb8",
+  primaryDark: "#0c4e77",
 };
 
 export const FluiColors = {
-  background: "#302f2e",
+
+  background: "#0e1b22",
   text: "#ffffff",
-  mutedText: "#b9b7b7",
+  mutedText: "#9fb3bd",
   inputBackground: "#ffffff",
-  inputText: "#505050",
-  border: "#dedede",
-  primary: "#b747f8",
-  primaryDark: "#511288",
-  card: "#3a3837",
-  /** Fundo das folhas (bottom sheets) e painéis sobrepostos ao mapa. */
-  surface: "#2a2928",
-  /** Divisórias e bordas sutis dentro das folhas. */
-  surfaceAlt: "#454241",
-  /** Cinza dos blocos de carregamento (skeleton). */
-  skeleton: "#4a4746",
+  inputText: "#3a4a52",
+  border: "#d7e2e8",
+
+  primary: "#157bb8",
+  primaryDark: "#0c4e77",
+  primaryLight: "#47b7f8",
+  card: "#1a2e38",
+  surface: "#12222b",
+  surfaceAlt: "#2a414c",
+  skeleton: "#243a45",
   placeholder: "#d9d9d9",
-  success: "#3ddc84",
+
   sponsored: "#C98A2C",
-  available: "#2E7D4F",
+  available: "#21b383",
   danger: "#FF5353",
-  chipInactive: "#3A3A3A",
+  chipInactive: "#1f343e",
   star: "#F5B301",
   markerSponsored: "#EF9F27",
-  markerLivre: "#1D9E75",
+  markerLivre: "#21b383",
   markerClosed: "#E24B4A",
-  /* Níveis de movimento — usados no gráfico por horário e nos marcadores. */
-  busyLow: "#1d9e75",
+  busyLow: "#21b383",
   busyMedium: "#e0a226",
   busyHigh: "#e24b4a",
   sponsoredBg: "#412402",
   sponsoredText: "#FAC775",
-  livreBg: "#04342C",
+  livreBg: "#06342a",
   livreText: "#5DCAA5",
 };
 
@@ -68,19 +64,11 @@ export const BorderRadius = {
   card: 12,
 };
 
-/**
- * Tokens de motion design.
- * Centralizar as durações faz o app inteiro se mover no mesmo ritmo —
- * é o que dá a sensação de uma interface só, e não de telas soltas.
- */
+
 export const Motion = {
-  /** Resposta ao toque: precisa ser quase imediata. */
   fast: 120,
-  /** Transições de conteúdo (barras, cards, fade de listas). */
   base: 260,
-  /** Entrada de painéis grandes, como a folha de filtros. */
   slow: 380,
-  /** Mola usada nos retornos de toque. */
   spring: { damping: 14, stiffness: 180, mass: 0.6 },
 };
 
@@ -118,13 +106,9 @@ export const Colors = {
 
 export const Fonts = Platform.select({
   ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
     sans: "system-ui",
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
     serif: "ui-serif",
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
     rounded: "ui-rounded",
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
     mono: "ui-monospace",
   },
   default: {

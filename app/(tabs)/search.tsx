@@ -26,6 +26,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Chip } from "@/components/Chip";
 import { FilterSheet } from "@/components/FilterSheet";
+import { IntentSelector } from "@/components/IntentSelector";
 import RechargePoint from "@/components/recharge-point";
 import { StationCardSkeleton } from "@/components/StationCardSkeleton";
 import { StationMarker } from "@/components/StationMarker";
@@ -34,10 +35,10 @@ import { DARK_MAP_STYLE } from "@/constants/map-style";
 import { BorderRadius, FluiColors, FluiFonts, Motion, Spacing } from "@/constants/theme";
 import { useStationFilters } from "@/hooks/use-station-filters";
 import type { Station } from "@/mocks/station";
+import { rankStations, type StopIntent } from "@/utils/stop-intent";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
-/** Duas alturas para a folha de resultados: espiando o mapa ou lendo a lista. */
 const SHEET_PEEK = SCREEN_HEIGHT * 0.42;
 const SHEET_EXPANDED = SCREEN_HEIGHT * 0.78;
 
@@ -56,6 +57,7 @@ export default function SearchScreen() {
   const { filters, setFilters, query, setQuery, results, loading, clearFilters } =
     useStationFilters();
 
+  const [intent, setIntent] = useState<StopIntent>("rapida");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [filtersVisible, setFiltersVisible] = useState(false);
   const [expanded, setExpanded] = useState(false);
@@ -65,9 +67,9 @@ export default function SearchScreen() {
 
   const filtrosAtivos = countActiveFilters(filters);
 
-  /* ----------------------------------------------------------------------- */
-  /* Ações                                                                    */
-  /* ----------------------------------------------------------------------- */
+  
+   
+  const ordenados = useMemo(() => rankStations(results, intent), [results, intent]);
 
   const alternarFolha = useCallback(() => {
     const proxima = !expanded;
@@ -104,10 +106,6 @@ export default function SearchScreen() {
     Keyboard.dismiss();
   }
 
-  /* ----------------------------------------------------------------------- */
-  /* Filtros rápidos — atalhos para os filtros completos da folha             */
-  /* ----------------------------------------------------------------------- */
-
   const atalhos = useMemo(
     () => [
       {
@@ -143,8 +141,6 @@ export default function SearchScreen() {
     [filters, filtrosAtivos, clearFilters, setFilters],
   );
 
-  /* ----------------------------------------------------------------------- */
-
   return (
     <View style={styles.container}>
       <MapView
@@ -158,7 +154,7 @@ export default function SearchScreen() {
         toolbarEnabled={false}
         onPress={() => setSelectedId(null)}
       >
-        {results.map((station) => (
+        {ordenados.map(({ station }) => (
           <StationMarker
             key={station.id}
             station={station}
@@ -168,7 +164,6 @@ export default function SearchScreen() {
         ))}
       </MapView>
 
-      {/* ------------------------------ Busca ------------------------------ */}
       <View style={[styles.searchBar, { top: insets.top + Spacing.sm }]}>
         <Pressable
           accessibilityRole="button"
@@ -204,7 +199,6 @@ export default function SearchScreen() {
         </View>
       </View>
 
-      {/* ---------------------- Folha de resultados ------------------------ */}
       <Animated.View style={[styles.sheet, estiloFolha]}>
         <Pressable
           accessibilityRole="button"
@@ -247,6 +241,8 @@ export default function SearchScreen() {
             )}
           </Pressable>
         </View>
+
+        <IntentSelector value={intent} onChange={setIntent} />
 
         <ScrollView
           horizontal
@@ -305,19 +301,24 @@ export default function SearchScreen() {
           )}
 
           {!loading &&
-            results.map((station, index) => (
+            ordenados.map((item, index) => (
               <RechargePoint
-                key={station.id}
-                station={station}
+                key={item.station.id}
+                station={item.station}
+                stopEstimate={{
+                  energyKwh: item.energyKwh,
+                  cost: item.cost,
+                  reason: item.reason,
+                }}
                 index={index}
-                selected={station.id === selectedId}
+                selected={item.station.id === selectedId}
                 onPress={(alvo) =>
                   alvo.id === selectedId ? abrirFicha(alvo) : focarNoPonto(alvo)
                 }
               />
             ))}
 
-          {!loading && results.length > 0 && (
+          {!loading && ordenados.length > 0 && (
             <Text style={styles.listHint}>
               Toque uma vez para ver no mapa, duas para abrir a ficha.
             </Text>

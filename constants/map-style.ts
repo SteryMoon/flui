@@ -1,17 +1,13 @@
-/**
- * Estilo escuro do Google Maps alinhado à identidade visual do Flui.
- * As vias ficam mais claras que o fundo para manter contraste suficiente,
- * e os POIs são escondidos para que os marcadores de recarga se destaquem.
- */
+
 export const DARK_MAP_STYLE = [
-  { elementType: "geometry", stylers: [{ color: "#242322" }] },
+  { elementType: "geometry", stylers: [{ color: "#122029" }] },
   { elementType: "labels.icon", stylers: [{ visibility: "off" }] },
-  { elementType: "labels.text.fill", stylers: [{ color: "#9C9A99" }] },
-  { elementType: "labels.text.stroke", stylers: [{ color: "#1B1A19" }] },
+  { elementType: "labels.text.fill", stylers: [{ color: "#8fa6b1" }] },
+  { elementType: "labels.text.stroke", stylers: [{ color: "#0b161c" }] },
   {
     featureType: "administrative",
     elementType: "geometry.stroke",
-    stylers: [{ color: "#3F3D3C" }],
+    stylers: [{ color: "#2b414c" }],
   },
   {
     featureType: "poi",
@@ -20,22 +16,22 @@ export const DARK_MAP_STYLE = [
   {
     featureType: "poi.park",
     elementType: "geometry",
-    stylers: [{ color: "#1E2B24" }, { visibility: "on" }],
+    stylers: [{ color: "#132e26" }, { visibility: "on" }],
   },
   {
     featureType: "road",
     elementType: "geometry",
-    stylers: [{ color: "#3D3B3A" }],
+    stylers: [{ color: "#22383f" }],
   },
   {
     featureType: "road.arterial",
     elementType: "geometry",
-    stylers: [{ color: "#4A4746" }],
+    stylers: [{ color: "#2d4751" }],
   },
   {
     featureType: "road.highway",
     elementType: "geometry",
-    stylers: [{ color: "#5B5654" }],
+    stylers: [{ color: "#3a5b68" }],
   },
   {
     featureType: "transit",
@@ -44,6 +40,6 @@ export const DARK_MAP_STYLE = [
   {
     featureType: "water",
     elementType: "geometry",
-    stylers: [{ color: "#141313" }],
+    stylers: [{ color: "#0a1a22" }],
   },
 ];

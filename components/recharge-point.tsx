@@ -32,21 +32,16 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 type RechargePointProps = {
   station: Station;
-  /** Card destacado quando o marcador correspondente está selecionado no mapa. */
+  stopEstimate?: { energyKwh: number; cost: number; reason: string };
   selected?: boolean;
-  /** Posição na lista — usada para escalonar a animação de entrada. */
   index?: number;
   onPress: (station: Station) => void;
 };
 
-/**
- * Card de um ponto de recarga na lista de resultados.
- *
- * O status é comunicado de três formas ao mesmo tempo (cor da borda, etiqueta
- * escrita e rótulo de acessibilidade), para não depender só da cor.
- */
+
 export default function RechargePoint({
   station,
+  stopEstimate,
   selected = false,
   index = 0,
   onPress,
@@ -86,6 +81,7 @@ export default function RechargePoint({
     `Até ${getMaxPowerKw(station)} quilowatts. ` +
     `${formatDistance(station.distanceKm)}, cerca de ${station.etaMinutes} minutos. ` +
     `Nota ${station.rating.toFixed(1).replace(".", ",")} de 5.` +
+    (stopEstimate ? ` Nesta parada: ${stopEstimate.reason}.` : "") +
     (station.sponsored ? " Ponto patrocinado." : "");
 
   return (
@@ -164,11 +160,21 @@ export default function RechargePoint({
         {formatPrice(station.priceKwh)}
         <Text style={styles.priceUnit}> / kWh</Text>
       </Text>
+
+      {stopEstimate && (
+        <View style={styles.estimate}>
+          <MaterialCommunityIcons
+            name="timer-sand"
+            size={13}
+            color={FluiColors.primaryLight}
+          />
+          <Text style={styles.estimateText}>{stopEstimate.reason}</Text>
+        </View>
+      )}
     </AnimatedPressable>
   );
 }
 
-/** Etiqueta escrita do status — o texto acompanha a cor da borda. */
 function Badge({ station }: { station: Station }) {
   const status = getStationStatus(station);
 
@@ -184,7 +190,7 @@ function Badge({ station }: { station: Station }) {
 
   if (status === "fechado") {
     return (
-      <View style={[styles.badge, { backgroundColor: "#3B1F1F" }]}>
+      <View style={[styles.badge, { backgroundColor: "#3a1f22" }]}>
         <Text style={[styles.badgeText, { color: FluiColors.markerClosed }]}>
           Fechado
         </Text>
@@ -194,7 +200,7 @@ function Badge({ station }: { station: Station }) {
 
   if (status === "lotado") {
     return (
-      <View style={[styles.badge, { backgroundColor: "#3A2E10" }]}>
+      <View style={[styles.badge, { backgroundColor: "#3a2e10" }]}>
         <Text style={[styles.badgeText, { color: FluiColors.busyMedium }]}>
           Todos ocupados
         </Text>
@@ -228,8 +234,23 @@ const styles = StyleSheet.create({
     padding: Spacing.md - 2,
   },
   cardSelected: {
-    backgroundColor: "#474443",
+    backgroundColor: "#223a46",
     borderLeftWidth: 6,
+  },
+  estimate: {
+    alignItems: "center",
+    borderTopColor: FluiColors.surfaceAlt,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    flexDirection: "row",
+    gap: 6,
+    marginTop: Spacing.sm,
+    paddingTop: Spacing.sm,
+  },
+  estimateText: {
+    color: FluiColors.primaryLight,
+    flex: 1,
+    fontFamily: FluiFonts.inter.medium,
+    fontSize: 12,
   },
   headerRow: {
     alignItems: "flex-start",

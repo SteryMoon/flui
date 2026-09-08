@@ -16,7 +16,6 @@ import {
 import { stationsMock } from "@/mocks/station";
 import { formatDistance } from "@/utils/station";
 
-/** Motorista simulado — nesta etapa o app ainda não tem back-end. */
 const USUARIO = {
   nome: "Ana Marques",
   email: "ana.marques@email.com",
@@ -57,7 +56,6 @@ export default function PerfilScreen() {
 
   const veiculo = VEICULOS.find((item) => item.id === veiculoAtivo) ?? VEICULOS[0];
 
-  /** Nesta etapa os favoritos são apenas os pontos patrocinados do mock. */
   const favoritos = stationsMock.filter((station) => station.sponsored);
 
   return (
@@ -69,7 +67,6 @@ export default function PerfilScreen() {
       ]}
       showsVerticalScrollIndicator={false}
     >
-      {/* --------------------------- Cabeçalho --------------------------- */}
       <View style={styles.userCard}>
         <View style={styles.avatar}>
           <Ionicons name="person" size={22} color={FluiColors.text} />
@@ -92,14 +89,12 @@ export default function PerfilScreen() {
         </Pressable>
       </View>
 
-      {/* ---------------------------- Números ---------------------------- */}
       <View style={styles.statsRow}>
         <StatCard valor={`${USUARIO.carregamentos}`} rotulo="Carregamentos" />
         <StatCard valor={`${USUARIO.kwhCarregados}`} rotulo="kWh carregados" />
         <StatCard valor={`${USUARIO.co2Evitado} kg`} rotulo="CO₂ evitado" />
       </View>
 
-      {/* ------------------------------ Abas ----------------------------- */}
       <View style={styles.tabsRow}>
         <Chip label="Carros" selected={aba === "carros"} onPress={() => setAba("carros")} />
         <Chip
@@ -210,7 +205,6 @@ export default function PerfilScreen() {
         </Animated.View>
       )}
 
-      {/* --------------------------- Favoritos --------------------------- */}
       <Text style={styles.sectionTitle} accessibilityRole="header">
         Meus favoritos
       </Text>
@@ -251,7 +245,6 @@ export default function PerfilScreen() {
   );
 }
 
-/* -------------------------------------------------------------------------- */
 
 function StatCard({ valor, rotulo }: { valor: string; rotulo: string }) {
   return (
@@ -286,7 +279,6 @@ function Spec({
   );
 }
 
-/* -------------------------------------------------------------------------- */
 
 const styles = StyleSheet.create({
   addButton: {

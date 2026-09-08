@@ -80,7 +80,6 @@ export default function PontoRecargaScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* --------------------------- Fotos --------------------------- */}
         <View style={styles.headerImage}>
           <ScrollView
             horizontal
@@ -117,7 +116,6 @@ export default function PontoRecargaScreen() {
           </View>
         </View>
 
-        {/* ------------------------ Status atual ------------------------ */}
         <View style={styles.statusBadgeWrap}>
           <Animated.View
             entering={reduzirMovimento ? undefined : FadeIn.duration(Motion.base)}
@@ -166,7 +164,6 @@ export default function PontoRecargaScreen() {
             </Text>
           </View>
 
-          {/* --------------------------- Ações --------------------------- */}
           <View style={styles.actionsRow}>
             <ActionButton
               icon="directions"
@@ -186,7 +183,6 @@ export default function PontoRecargaScreen() {
             />
           </View>
 
-          {/* ------------------------- Resumo -------------------------- */}
           <View style={styles.summaryRow}>
             <SummaryCard
               icon="ev-station"
@@ -208,17 +204,14 @@ export default function PontoRecargaScreen() {
 
           <Text style={styles.about}>{station.about}</Text>
 
-          {/* ----------------------- Carregadores ---------------------- */}
           <Section title="Carregadores disponíveis">
             {station.chargers.map((charger, index) => (
               <ChargerRow key={charger.id} charger={charger} index={index} />
             ))}
           </Section>
 
-          {/* ------------------------ Movimento ------------------------ */}
           <BusyChart station={station} />
 
-          {/* ------------------------- Horários ------------------------ */}
           <Section title="Horários de funcionamento">
             {semana.map((dia) => (
               <View
@@ -240,7 +233,6 @@ export default function PontoRecargaScreen() {
             ))}
           </Section>
 
-          {/* ---------------------- Comodidades ------------------------ */}
           <Section title="Comodidades no local">
             <View style={styles.amenitiesGrid}>
               {station.amenities.map((amenity) => (
@@ -284,7 +276,6 @@ export default function PontoRecargaScreen() {
             ))}
           </Section>
 
-          {/* -------------------- Acessibilidade ----------------------- */}
           <Section title="Acessibilidade">
             <BulletList items={station.accessibility} />
           </Section>
@@ -295,7 +286,6 @@ export default function PontoRecargaScreen() {
         </View>
       </ScrollView>
 
-      {/* ------------------------ Barra fixa ------------------------- */}
       <View style={[styles.bottomBar, { paddingBottom: insets.bottom + Spacing.sm }]}>
         <View style={styles.bottomTexts}>
           <Text style={styles.bottomLabel}>Estimativa da parada</Text>
@@ -316,10 +306,6 @@ export default function PontoRecargaScreen() {
     </View>
   );
 }
-
-/* -------------------------------------------------------------------------- */
-/* Blocos reutilizados                                                        */
-/* -------------------------------------------------------------------------- */
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -445,7 +431,6 @@ function BulletList({ items }: { items: string[] }) {
   );
 }
 
-/* -------------------------------------------------------------------------- */
 
 const styles = StyleSheet.create({
   about: {

@@ -19,26 +19,14 @@ type StationMarkerProps = {
   onPress: (station: Station) => void;
 };
 
-/**
- * Marcador personalizado do mapa.
- *
- * A leitura é feita em três camadas, para não depender só da cor:
- *  - cor da bolha  -> livre (verde) / lotado (laranja) / fechado (vermelho)
- *  - ícone         -> raio para DC rápido, tomada para AC
- *  - texto         -> potência máxima em kW
- * Pontos patrocinados ganham a cor âmbar da marca e uma borda mais grossa.
- */
+
 function StationMarkerComponent({ station, selected, onPress }: StationMarkerProps) {
   const status = getStationStatus(station);
   const color = getStatusColor(station);
   const rapido = hasFastCharging(station);
   const disponiveis = getAvailableChargers(station);
 
-  /**
-   * No Android, marcadores com filhos custam caro para redesenhar.
-   * Ligamos o redesenho por um instante quando a seleção muda e desligamos
-   * em seguida, o que mantém o mapa fluido.
-   */
+  
   const [tracksChanges, setTracksChanges] = useState(true);
   useEffect(() => {
     setTracksChanges(true);

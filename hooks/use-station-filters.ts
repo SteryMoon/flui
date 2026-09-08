@@ -4,10 +4,8 @@ import { EMPTY_FILTERS, StationFilters } from "@/constants/filters";
 import { Station, stationsMock } from "@/mocks/station";
 import { getAvailableChargers, getMaxPowerKw, isOpenNow } from "@/utils/station";
 
-/** Tempo fingido de "busca no servidor", para exibir o estado de carregamento. */
 const FAKE_LATENCY_MS = 650;
 
-/** Regra pura de filtragem — fácil de ler e de testar. */
 export function applyFilters(
   stations: Station[],
   filters: StationFilters,
@@ -48,10 +46,7 @@ export function applyFilters(
   });
 }
 
-/**
- * Concentra o estado da busca: filtros, texto digitado, resultado e loading.
- * A tela só se preocupa em desenhar — a regra mora aqui.
- */
+
 export function useStationFilters(stations: Station[] = stationsMock) {
   const [filters, setFilters] = useState<StationFilters>(EMPTY_FILTERS);
   const [query, setQuery] = useState("");
@@ -63,7 +58,6 @@ export function useStationFilters(stations: Station[] = stationsMock) {
     [stations, filters, query],
   );
 
-  // Sempre que os filtros mudam, simulamos uma nova consulta ao servidor.
   useEffect(() => {
     if (primeiraRenderizacao.current) {
       primeiraRenderizacao.current = false;

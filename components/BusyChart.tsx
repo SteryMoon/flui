@@ -15,17 +15,11 @@ import { getBusyColor, getBusyLabel, getCurrentBusy, getQuietWindows } from "@/u
 
 const CHART_HEIGHT = 96;
 
-/**
- * Gráfico de movimento por hora do dia.
- * É a partir dele que o motorista descobre os períodos de menor movimento —
- * um dos pedidos centrais da ficha do ponto.
- */
 export function BusyChart({ station }: { station: Station }) {
   const horaAtual = new Date().getHours();
   const movimentoAgora = getCurrentBusy(station);
   const janelas = getQuietWindows(station);
 
-  // Resumo em texto: leitores de tela não conseguem interpretar as barras.
   const resumoAcessivel =
     `Movimento ao longo do dia. Agora: ${getBusyLabel(movimentoAgora).toLowerCase()}. ` +
     (janelas.length > 0

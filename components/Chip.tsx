@@ -16,16 +16,12 @@ type ChipProps = {
   label: string;
   selected?: boolean;
   onPress: () => void;
-  /** Texto lido por leitores de tela no lugar do label, quando ele não basta. */
   accessibilityLabel?: string;
   accessibilityHint?: string;
   style?: ViewStyle;
 };
 
-/**
- * Chip de filtro com feedback tátil e visual.
- * O estado selecionado é anunciado por leitores de tela via accessibilityState.
- */
+
 export function Chip({
   label,
   selected = false,
@@ -81,7 +77,6 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.button,
     borderWidth: 1,
     justifyContent: "center",
-    // 44px é o alvo mínimo de toque recomendado pelas WCAG.
     minHeight: 40,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
