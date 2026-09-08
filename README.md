@@ -17,9 +17,6 @@ espaços marcados com `COLE_AQUI_SUA_CHAVE_DO_GOOGLE_MAPS` (um em `ios.config` e
 outro em `android.config`). No Expo Go o mapa já abre sem chave; ela só é
 necessária para gerar um build próprio.
 
-> Se o repositório for público, o ideal é mover a chave para um `app.config.js`
-> lendo de variável de ambiente, em vez de deixá-la versionada.
-
 ## O que existe nesta etapa
 
 | Requisito | Onde está |
