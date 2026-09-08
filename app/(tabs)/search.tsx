@@ -39,8 +39,8 @@ import { rankStations, type StopIntent } from "@/utils/stop-intent";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
-const SHEET_PEEK = SCREEN_HEIGHT * 0.42;
-const SHEET_EXPANDED = SCREEN_HEIGHT * 0.78;
+const SHEET_PEEK = SCREEN_HEIGHT * 0.46;
+const SHEET_EXPANDED = SCREEN_HEIGHT * 0.85;
 
 const REGIAO_INICIAL: Region = {
   latitude: -23.5735,
@@ -67,8 +67,7 @@ export default function SearchScreen() {
 
   const filtrosAtivos = countActiveFilters(filters);
 
-  
-   
+
   const ordenados = useMemo(() => rankStations(results, intent), [results, intent]);
 
   const alternarFolha = useCallback(() => {
@@ -140,6 +139,7 @@ export default function SearchScreen() {
     ],
     [filters, filtrosAtivos, clearFilters, setFilters],
   );
+
 
   return (
     <View style={styles.container}>
@@ -242,28 +242,29 @@ export default function SearchScreen() {
           </Pressable>
         </View>
 
-        <IntentSelector value={intent} onChange={setIntent} />
-
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.chipsRow}
-        >
-          {atalhos.map((atalho) => (
-            <Chip
-              key={atalho.key}
-              label={atalho.label}
-              selected={atalho.ativo}
-              onPress={atalho.acao}
-            />
-          ))}
-        </ScrollView>
-
         <ScrollView
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.chipsRow}
+          >
+            {atalhos.map((atalho) => (
+              <Chip
+                key={atalho.key}
+                label={atalho.label}
+                selected={atalho.ativo}
+                onPress={atalho.acao}
+              />
+            ))}
+          </ScrollView>
+
+          <IntentSelector value={intent} onChange={setIntent} />
+
+          <View style={styles.listItems}>
           {loading && (
             <>
               <StationCardSkeleton />
@@ -323,6 +324,7 @@ export default function SearchScreen() {
               Toque uma vez para ver no mapa, duas para abrir a ficha.
             </Text>
           )}
+          </View>
         </ScrollView>
       </Animated.View>
 
@@ -427,7 +429,9 @@ const styles = StyleSheet.create({
     paddingTop: Spacing.sm + 2,
   },
   list: {
-    paddingBottom: Spacing.xl,
+    paddingBottom: Spacing.xl * 2,
+  },
+  listItems: {
     paddingHorizontal: Spacing.md,
   },
   listHint: {

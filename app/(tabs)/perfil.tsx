@@ -16,32 +16,39 @@ import {
 import { stationsMock } from "@/mocks/station";
 import { formatDistance } from "@/utils/station";
 
+/** Dados da conta — nesta etapa ainda não há back-end nem login real. */
 const USUARIO = {
-  nome: "Ana Marques",
-  email: "ana.marques@email.com",
-  carregamentos: 47,
-  kwhCarregados: 1240,
-  co2Evitado: 312,
+  nome: "Stephanie da Silva Cruz",
+  email: "stephanie.cruz@email.com",
+  carregamentos: 18,
+  kwhCarregados: 496,
+  co2Evitado: 124,
 };
 
+/**
+ * Os dois veículos são propositalmente opostos: um carro urbano, que aceita
+ * pouca potência e por isso quase nunca aproveita um carregador ultrarrápido,
+ * e um carro de viagem, que aceita muita. É o que dá sentido à recomendação
+ * por intenção de parada na tela de busca.
+ */
 const VEICULOS = [
   {
-    id: "byd-dolphin",
-    nome: "BYD Dolphin Plus",
-    detalhe: "2024 · Azul Oceano · BYD-4321",
-    autonomiaKm: 420,
-    cargaMaximaKw: 60,
+    id: "renault-kwid",
+    nome: "Renault Kwid E-Tech",
+    detalhe: "2025 · Cinza · RKE-2H07",
+    autonomiaKm: 185,
+    cargaMaximaKw: 30,
     conector: "CCS2",
-    paradaSugeridaKm: 294,
+    paradaSugeridaKm: 130,
   },
   {
-    id: "vw-id4",
-    nome: "Volkswagen ID.4",
-    detalhe: "2023 · Branco · VWD-1180",
-    autonomiaKm: 520,
-    cargaMaximaKw: 125,
+    id: "byd-seal",
+    nome: "BYD Seal",
+    detalhe: "2025 · Azul Atlântico · BSE-5C12",
+    autonomiaKm: 570,
+    cargaMaximaKw: 150,
     conector: "CCS2",
-    paradaSugeridaKm: 364,
+    paradaSugeridaKm: 400,
   },
 ];
 
@@ -56,6 +63,7 @@ export default function PerfilScreen() {
 
   const veiculo = VEICULOS.find((item) => item.id === veiculoAtivo) ?? VEICULOS[0];
 
+  /** Nesta etapa os favoritos são apenas os pontos patrocinados do mock. */
   const favoritos = stationsMock.filter((station) => station.sponsored);
 
   return (
@@ -67,6 +75,7 @@ export default function PerfilScreen() {
       ]}
       showsVerticalScrollIndicator={false}
     >
+      {/* --------------------------- Cabeçalho --------------------------- */}
       <View style={styles.userCard}>
         <View style={styles.avatar}>
           <Ionicons name="person" size={22} color={FluiColors.text} />
@@ -89,12 +98,14 @@ export default function PerfilScreen() {
         </Pressable>
       </View>
 
+      {/* ---------------------------- Números ---------------------------- */}
       <View style={styles.statsRow}>
         <StatCard valor={`${USUARIO.carregamentos}`} rotulo="Carregamentos" />
         <StatCard valor={`${USUARIO.kwhCarregados}`} rotulo="kWh carregados" />
         <StatCard valor={`${USUARIO.co2Evitado} kg`} rotulo="CO₂ evitado" />
       </View>
 
+      {/* ------------------------------ Abas ----------------------------- */}
       <View style={styles.tabsRow}>
         <Chip label="Carros" selected={aba === "carros"} onPress={() => setAba("carros")} />
         <Chip
@@ -205,6 +216,7 @@ export default function PerfilScreen() {
         </Animated.View>
       )}
 
+      {/* --------------------------- Favoritos --------------------------- */}
       <Text style={styles.sectionTitle} accessibilityRole="header">
         Meus favoritos
       </Text>
@@ -245,6 +257,7 @@ export default function PerfilScreen() {
   );
 }
 
+/* -------------------------------------------------------------------------- */
 
 function StatCard({ valor, rotulo }: { valor: string; rotulo: string }) {
   return (
@@ -279,6 +292,7 @@ function Spec({
   );
 }
 
+/* -------------------------------------------------------------------------- */
 
 const styles = StyleSheet.create({
   addButton: {
