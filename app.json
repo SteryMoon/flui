@@ -1,0 +1,59 @@
+{
+  "expo": {
+    "name": "flui",
+    "slug": "flui",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "flui",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "config": {
+        "googleMapsApiKey": "COLE_AQUI_SUA_CHAVE_DO_GOOGLE_MAPS"
+      },
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "O Flui usa sua localização para mostrar os pontos de recarga mais próximos."
+      }
+    },
+    "android": {
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "package": "com.flui.app",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ],
+      "config": {
+        "googleMaps": {
+          "apiKey": "COLE_AQUI_SUA_CHAVE_DO_GOOGLE_MAPS"
+        }
+      }
+    },
+    "web": {
+      "output": "static"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff",
+          "dark": {
+            "backgroundColor": "#000000"
+          }
+        }
+      ],
+      "expo-font",
+      "expo-image",
+      "expo-status-bar",
+      "expo-web-browser"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}
