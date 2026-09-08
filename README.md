@@ -1,4 +1,4 @@
-# Flui — Charge Map Cup (Etapa 2)
+# Flui 
 
 App mobile para motoristas de veículos elétricos encontrarem pontos de recarga.
 Feito em React Native com Expo Router e TypeScript.
