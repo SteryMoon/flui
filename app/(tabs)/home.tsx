@@ -96,7 +96,7 @@ export default function HomeScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-      <Text style={styles.greeting}>Bem-vinda de volta, Raíssa!</Text>
+      <Text style={styles.greeting}>Bem-vinda de volta, Stephanie!</Text>
 
       <View style={styles.subtitleRow}>
         <Text style={styles.subtitle}>
