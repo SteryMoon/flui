@@ -27,9 +27,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Chip } from "@/components/Chip";
 import { FilterSheet } from "@/components/FilterSheet";
 import { IntentSelector } from "@/components/IntentSelector";
+import { StationMarker } from "@/components/StationMarker";
 import RechargePoint from "@/components/recharge-point";
 import { StationCardSkeleton } from "@/components/StationCardSkeleton";
-import { StationMarker } from "@/components/StationMarker";
 import { countActiveFilters } from "@/constants/filters";
 import { DARK_MAP_STYLE } from "@/constants/map-style";
 import { BorderRadius, FluiColors, FluiFonts, Motion, Spacing } from "@/constants/theme";
@@ -39,6 +39,7 @@ import { rankStations, type StopIntent } from "@/utils/stop-intent";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
+/** Duas alturas para a folha de resultados: espiando o mapa ou lendo a lista. */
 const SHEET_PEEK = SCREEN_HEIGHT * 0.46;
 const SHEET_EXPANDED = SCREEN_HEIGHT * 0.85;
 
@@ -67,8 +68,16 @@ export default function SearchScreen() {
 
   const filtrosAtivos = countActiveFilters(filters);
 
-
+  /**
+   * Os filtros dizem quais pontos servem; a intenção diz qual deles é o
+   * melhor agora. Por isso a ordenação roda depois da filtragem, e não dentro
+   * dela — assim nenhum ponto some por causa da intenção escolhida.
+   */
   const ordenados = useMemo(() => rankStations(results, intent), [results, intent]);
+
+  /* ----------------------------------------------------------------------- */
+  /* Ações                                                                    */
+  /* ----------------------------------------------------------------------- */
 
   const alternarFolha = useCallback(() => {
     const proxima = !expanded;
@@ -105,6 +114,10 @@ export default function SearchScreen() {
     Keyboard.dismiss();
   }
 
+  /* ----------------------------------------------------------------------- */
+  /* Filtros rápidos — atalhos para os filtros completos da folha             */
+  /* ----------------------------------------------------------------------- */
+
   const atalhos = useMemo(
     () => [
       {
@@ -140,6 +153,7 @@ export default function SearchScreen() {
     [filters, filtrosAtivos, clearFilters, setFilters],
   );
 
+  /* ----------------------------------------------------------------------- */
 
   return (
     <View style={styles.container}>
@@ -164,6 +178,7 @@ export default function SearchScreen() {
         ))}
       </MapView>
 
+      {/* ------------------------------ Busca ------------------------------ */}
       <View style={[styles.searchBar, { top: insets.top + Spacing.sm }]}>
         <Pressable
           accessibilityRole="button"
@@ -199,6 +214,7 @@ export default function SearchScreen() {
         </View>
       </View>
 
+      {/* ---------------------- Folha de resultados ------------------------ */}
       <Animated.View style={[styles.sheet, estiloFolha]}>
         <Pressable
           accessibilityRole="button"
