@@ -89,9 +89,15 @@ export default function SearchScreen() {
     }
   }, []);
 
-  const abrirFicha = useCallback((station: Station) => {
-    router.push({ pathname: "/ponto-recarga", params: { id: station.id } });
-  }, []);
+    const abrirFicha = useCallback(
+    (station: Station) => {
+      router.push({
+        pathname: "/ponto-recarga",
+        params: { id: station.id, intent },
+      });
+    },
+    [intent],
+  );
 
   function buscar() {
     Keyboard.dismiss();

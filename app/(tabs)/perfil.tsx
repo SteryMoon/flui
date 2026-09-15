@@ -13,10 +13,10 @@ import {
   Motion,
   Spacing,
 } from "@/constants/theme";
-import { stationsMock } from "@/mocks/station";
 import { useFavorites } from "@/hooks/use-favorites";
+import { useHistory } from "@/hooks/use-history";
 import { ASPECTOS, mediaGeral, useReviews } from "@/hooks/use-reviews";
-import { getStationById } from "@/mocks/station";
+import { getStationById, stationsMock } from "@/mocks/station";
 import { formatDistance } from "@/utils/station";
 
 /** Dados da conta — nesta etapa ainda não há back-end nem login real. */
@@ -54,6 +54,23 @@ const VEICULOS = [
     paradaSugeridaKm: 400,
   },
 ];
+/** Os mesmos rótulos da tela de busca, para o histórico falar a mesma língua. */
+const INTENT_LABELS: Record<string, string> = {
+  rapida: "Só recarregar",
+  cafe: "Café ou pausa",
+  refeicao: "Refeição ou compras",
+};
+
+/** Data relativa: "hoje" diz mais que "15/09" numa lista de visitas. */
+function quando(iso: string): string {
+  const dias = Math.floor(
+    (Date.now() - new Date(iso).getTime()) / (1000 * 60 * 60 * 24),
+  );
+  if (dias === 0) return "Hoje";
+  if (dias === 1) return "Ontem";
+  if (dias < 7) return `Há ${dias} dias`;
+  return new Date(iso).toLocaleDateString("pt-BR");
+}
 
 type Aba = "carros" | "viagens" | "avaliacoes";
 
@@ -69,6 +86,7 @@ export default function PerfilScreen() {
   /** Nesta etapa os favoritos são apenas os pontos patrocinados do mock. */
   const { ids: favoritosIds } = useFavorites();
   const { avaliacoes } = useReviews();
+  const { visitas } = useHistory();
   const favoritos = stationsMock.filter((station) =>
     favoritosIds.includes(station.id),
   );
@@ -188,20 +206,63 @@ export default function PerfilScreen() {
         </Animated.View>
       )}
 
-      {aba === "viagens" && (
+            {aba === "viagens" && (
         <Animated.View
           entering={reduzirMovimento ? undefined : FadeInDown.duration(Motion.base)}
-          style={styles.emptyBox}
         >
-          <MaterialCommunityIcons
-            name="map-clock-outline"
-            size={36}
-            color={FluiColors.mutedText}
-          />
-          <Text style={styles.emptyTitle}>Nenhuma viagem registrada</Text>
-          <Text style={styles.emptyText}>
-            O histórico de viagens chega na próxima etapa do projeto.
-          </Text>
+          {visitas.length === 0 && (
+            <View style={styles.emptyBox}>
+              <MaterialCommunityIcons
+                name="map-clock-outline"
+                size={36}
+                color={FluiColors.mutedText}
+              />
+              <Text style={styles.emptyTitle}>Nenhuma viagem registrada</Text>
+              <Text style={styles.emptyText}>
+                Os pontos que você abrir aparecem aqui.
+              </Text>
+            </View>
+          )}
+
+          {visitas.map((visita) => {
+            const ponto = getStationById(visita.stationId);
+            if (!ponto) return null;
+
+            return (
+              <Pressable
+                key={visita.stationId}
+                accessibilityRole="button"
+                accessibilityLabel={`${ponto.name}, ${quando(visita.visitadaEm)}, parada do tipo ${INTENT_LABELS[visita.intent] ?? visita.intent}. Abrir ficha.`}
+                onPress={() =>
+                  router.push({
+                    pathname: "/ponto-recarga",
+                    params: { id: ponto.id },
+                  })
+                }
+                style={({ pressed }) => [styles.favoriteRow, pressed && styles.pressed]}
+              >
+                <View style={styles.favoriteIcon}>
+                  <MaterialCommunityIcons
+                    name="history"
+                    size={18}
+                    color={FluiColors.primary}
+                  />
+                </View>
+                <View style={styles.favoriteTexts}>
+                  <Text style={styles.favoriteName}>{ponto.name}</Text>
+                  <Text style={styles.favoriteDetail}>
+                    {quando(visita.visitadaEm)} ·{" "}
+                    {INTENT_LABELS[visita.intent] ?? visita.intent}
+                  </Text>
+                </View>
+                <Ionicons
+                  name="chevron-forward"
+                  size={18}
+                  color={FluiColors.mutedText}
+                />
+              </Pressable>
+            );
+          })}
         </Animated.View>
       )}
 
@@ -376,7 +437,7 @@ const styles = StyleSheet.create({
     marginTop: Spacing.md,
     minHeight: 46,
   },
-    aspectoItem: {
+  aspectoItem: {
     color: FluiColors.mutedText,
     flexBasis: "47%",
     fontFamily: FluiFonts.inter.regular,

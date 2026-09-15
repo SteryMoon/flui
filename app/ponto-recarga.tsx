@@ -2,7 +2,7 @@ import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
-import { ComponentProps, ReactNode, useState } from "react";
+import { ComponentProps, ReactNode, useEffect, useState } from "react";
 import {
   Platform,
   Pressable,
@@ -31,6 +31,7 @@ import {
 import { useFavorites } from "@/hooks/use-favorites";
 import { ReviewSheet } from "@/components/ReviewSheet";
 import { mediaGeral, useReviews } from "@/hooks/use-reviews";
+import { useHistory } from "@/hooks/use-history";
 import {
   AMENITY_ICONS,
   AMENITY_LABELS,
@@ -55,7 +56,7 @@ import {
 } from "@/utils/station";
 
 export default function PontoRecargaScreen() {
-  const { id } = useLocalSearchParams<{ id?: string }>();
+  const { id, intent } = useLocalSearchParams<{ id?: string; intent?: string }>();
   const station = getStationById(id) ?? stationsMock[0];
 
   const insets = useSafeAreaInsets();
@@ -68,6 +69,11 @@ export default function PontoRecargaScreen() {
   const { minhaAvaliacao } = useReviews();
   const avaliacao = minhaAvaliacao(station.id);
   const [avaliarVisivel, setAvaliarVisivel] = useState(false);
+    const { registrar } = useHistory();
+
+  useEffect(() => {
+    registrar(station.id, intent ?? "rapida");
+  }, [station.id, intent, registrar]);
 
   const aberto = isOpenNow(station);
   const disponiveis = getAvailableChargers(station);
@@ -331,7 +337,7 @@ export default function PontoRecargaScreen() {
           <Text style={styles.bottomButtonText}>Traçar rota</Text>
         </Pressable>
       </View>
-            <ReviewSheet
+      <ReviewSheet
         visible={avaliarVisivel}
         stationId={station.id}
         stationName={station.name}
@@ -723,7 +729,7 @@ const styles = StyleSheet.create({
     fontFamily: FluiFonts.inter.medium,
     fontSize: 13,
   },
-    reviewButton: {
+  reviewButton: {
     alignItems: "center",
     backgroundColor: FluiColors.card,
     borderRadius: BorderRadius.button,
