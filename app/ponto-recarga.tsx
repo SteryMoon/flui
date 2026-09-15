@@ -28,6 +28,7 @@ import {
   Motion,
   Spacing,
 } from "@/constants/theme";
+import { useFavorites } from "@/hooks/use-favorites";
 import {
   AMENITY_ICONS,
   AMENITY_LABELS,
@@ -60,7 +61,8 @@ export default function PontoRecargaScreen() {
   const reduzirMovimento = useReducedMotion();
 
   const [fotoAtual, setFotoAtual] = useState(0);
-  const [favorito, setFavorito] = useState(false);
+  const { isFavorito, alternar } = useFavorites();
+  const favorito = isFavorito(station.id);
 
   const aberto = isOpenNow(station);
   const disponiveis = getAvailableChargers(station);
@@ -69,9 +71,9 @@ export default function PontoRecargaScreen() {
 
   function alternarFavorito() {
     if (Platform.OS !== "web") {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => { });
     }
-    setFavorito((atual) => !atual);
+    alternar(station.id);
   }
 
   return (

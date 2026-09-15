@@ -14,6 +14,7 @@ import {
   Spacing,
 } from "@/constants/theme";
 import { stationsMock } from "@/mocks/station";
+import { useFavorites } from "@/hooks/use-favorites";
 import { formatDistance } from "@/utils/station";
 
 /** Dados da conta — nesta etapa ainda não há back-end nem login real. */
@@ -64,8 +65,11 @@ export default function PerfilScreen() {
   const veiculo = VEICULOS.find((item) => item.id === veiculoAtivo) ?? VEICULOS[0];
 
   /** Nesta etapa os favoritos são apenas os pontos patrocinados do mock. */
-  const favoritos = stationsMock.filter((station) => station.sponsored);
+  const { ids: favoritosIds } = useFavorites();
 
+  const favoritos = stationsMock.filter((station) =>
+    favoritosIds.includes(station.id),
+  );
   return (
     <ScrollView
       style={styles.root}
@@ -220,6 +224,20 @@ export default function PerfilScreen() {
       <Text style={styles.sectionTitle} accessibilityRole="header">
         Meus favoritos
       </Text>
+
+      {favoritos.length === 0 && (
+        <View style={styles.emptyBox}>
+          <MaterialCommunityIcons
+            name="heart-outline"
+            size={36}
+            color={FluiColors.mutedText}
+          />
+          <Text style={styles.emptyTitle}>Nenhum favorito ainda</Text>
+          <Text style={styles.emptyText}>
+            Toque no coração na ficha de um ponto para salvá-lo aqui.
+          </Text>
+        </View>
+      )}
 
       {favoritos.map((station, index) => (
         <Animated.View
