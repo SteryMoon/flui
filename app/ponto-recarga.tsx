@@ -29,6 +29,8 @@ import {
   Spacing,
 } from "@/constants/theme";
 import { useFavorites } from "@/hooks/use-favorites";
+import { ReviewSheet } from "@/components/ReviewSheet";
+import { mediaGeral, useReviews } from "@/hooks/use-reviews";
 import {
   AMENITY_ICONS,
   AMENITY_LABELS,
@@ -63,6 +65,9 @@ export default function PontoRecargaScreen() {
   const [fotoAtual, setFotoAtual] = useState(0);
   const { isFavorito, alternar } = useFavorites();
   const favorito = isFavorito(station.id);
+  const { minhaAvaliacao } = useReviews();
+  const avaliacao = minhaAvaliacao(station.id);
+  const [avaliarVisivel, setAvaliarVisivel] = useState(false);
 
   const aberto = isOpenNow(station);
   const disponiveis = getAvailableChargers(station);
@@ -184,6 +189,27 @@ export default function PontoRecargaScreen() {
               onPress={() => router.push({ pathname: "/em-construcao", params: { title: "Compartilhar" } })}
             />
           </View>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={
+              avaliacao
+                ? `Editar sua avaliação, ${mediaGeral(avaliacao.notas).toFixed(1).replace(".", ",")} de 5`
+                : "Avaliar este ponto de recarga"
+            }
+            onPress={() => setAvaliarVisivel(true)}
+            style={({ pressed }) => [styles.reviewButton, pressed && styles.pressed]}
+          >
+            <MaterialIcons
+              color={FluiColors.star}
+              name={avaliacao ? "star" : "star-border"}
+              size={18}
+            />
+            <Text style={styles.reviewButtonText}>
+              {avaliacao
+                ? `Sua nota: ${mediaGeral(avaliacao.notas).toFixed(1).replace(".", ",")}`
+                : "Avaliar este ponto"}
+            </Text>
+          </Pressable>
 
           <View style={styles.summaryRow}>
             <SummaryCard
@@ -305,6 +331,12 @@ export default function PontoRecargaScreen() {
           <Text style={styles.bottomButtonText}>Traçar rota</Text>
         </Pressable>
       </View>
+            <ReviewSheet
+        visible={avaliarVisivel}
+        stationId={station.id}
+        stationName={station.name}
+        onClose={() => setAvaliarVisivel(false)}
+      />
     </View>
   );
 }
@@ -687,6 +719,21 @@ const styles = StyleSheet.create({
     marginTop: Spacing.sm,
   },
   ratingText: {
+    color: FluiColors.text,
+    fontFamily: FluiFonts.inter.medium,
+    fontSize: 13,
+  },
+    reviewButton: {
+    alignItems: "center",
+    backgroundColor: FluiColors.card,
+    borderRadius: BorderRadius.button,
+    flexDirection: "row",
+    gap: 6,
+    justifyContent: "center",
+    marginTop: Spacing.sm,
+    minHeight: 44,
+  },
+  reviewButtonText: {
     color: FluiColors.text,
     fontFamily: FluiFonts.inter.medium,
     fontSize: 13,

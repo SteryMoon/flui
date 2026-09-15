@@ -15,6 +15,8 @@ import {
 } from "@/constants/theme";
 import { stationsMock } from "@/mocks/station";
 import { useFavorites } from "@/hooks/use-favorites";
+import { ASPECTOS, mediaGeral, useReviews } from "@/hooks/use-reviews";
+import { getStationById } from "@/mocks/station";
 import { formatDistance } from "@/utils/station";
 
 /** Dados da conta — nesta etapa ainda não há back-end nem login real. */
@@ -66,7 +68,7 @@ export default function PerfilScreen() {
 
   /** Nesta etapa os favoritos são apenas os pontos patrocinados do mock. */
   const { ids: favoritosIds } = useFavorites();
-
+  const { avaliacoes } = useReviews();
   const favoritos = stationsMock.filter((station) =>
     favoritosIds.includes(station.id),
   );
@@ -206,17 +208,68 @@ export default function PerfilScreen() {
       {aba === "avaliacoes" && (
         <Animated.View
           entering={reduzirMovimento ? undefined : FadeInDown.duration(Motion.base)}
-          style={styles.emptyBox}
         >
-          <MaterialCommunityIcons
-            name="star-outline"
-            size={36}
-            color={FluiColors.mutedText}
-          />
-          <Text style={styles.emptyTitle}>Você ainda não avaliou pontos</Text>
-          <Text style={styles.emptyText}>
-            O sistema de avaliação entra na etapa seguinte.
-          </Text>
+          {avaliacoes.length === 0 && (
+            <View style={styles.emptyBox}>
+              <MaterialCommunityIcons
+                name="star-outline"
+                size={36}
+                color={FluiColors.mutedText}
+              />
+              <Text style={styles.emptyTitle}>Você ainda não avaliou pontos</Text>
+              <Text style={styles.emptyText}>
+                Abra a ficha de um ponto e toque em avaliar.
+              </Text>
+            </View>
+          )}
+
+          {avaliacoes.map((avaliacao) => {
+            const ponto = getStationById(avaliacao.stationId);
+            if (!ponto) return null;
+
+            return (
+              <Pressable
+                key={avaliacao.stationId}
+                accessibilityRole="button"
+                accessibilityLabel={`Sua avaliação de ${ponto.name}: ${mediaGeral(avaliacao.notas).toFixed(1).replace(".", ",")} de 5. Abrir ficha.`}
+                onPress={() =>
+                  router.push({
+                    pathname: "/ponto-recarga",
+                    params: { id: ponto.id },
+                  })
+                }
+                style={({ pressed }) => [styles.reviewCard, pressed && styles.pressed]}
+              >
+                <View style={styles.reviewHeader}>
+                  <Text style={styles.favoriteName}>{ponto.name}</Text>
+                  <View style={styles.reviewScore}>
+                    <MaterialCommunityIcons
+                      name="star"
+                      size={14}
+                      color={FluiColors.star}
+                    />
+                    <Text style={styles.reviewScoreText}>
+                      {mediaGeral(avaliacao.notas).toFixed(1).replace(".", ",")}
+                    </Text>
+                  </View>
+                </View>
+
+                {/* Cada aspecto aparece escrito, não só como estrela:
+                    é o detalhe que diferencia da nota única. */}
+                <View style={styles.aspectosGrid}>
+                  {ASPECTOS.map((aspecto) => (
+                    <Text key={aspecto.chave} style={styles.aspectoItem}>
+                      {aspecto.label}: {avaliacao.notas[aspecto.chave]}/5
+                    </Text>
+                  ))}
+                </View>
+
+                {avaliacao.comentario.length > 0 && (
+                  <Text style={styles.reviewComment}>{avaliacao.comentario}</Text>
+                )}
+              </Pressable>
+            );
+          })}
         </Animated.View>
       )}
 
@@ -322,6 +375,46 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: Spacing.md,
     minHeight: 46,
+  },
+    aspectoItem: {
+    color: FluiColors.mutedText,
+    flexBasis: "47%",
+    fontFamily: FluiFonts.inter.regular,
+    fontSize: 11,
+  },
+  aspectosGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 4,
+    marginTop: Spacing.sm,
+  },
+  reviewCard: {
+    backgroundColor: FluiColors.card,
+    borderRadius: BorderRadius.card,
+    marginTop: Spacing.sm,
+    padding: Spacing.sm + 4,
+  },
+  reviewComment: {
+    color: FluiColors.text,
+    fontFamily: FluiFonts.inter.regular,
+    fontSize: 12,
+    fontStyle: "italic",
+    marginTop: Spacing.sm,
+  },
+  reviewHeader: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  reviewScore: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 4,
+  },
+  reviewScoreText: {
+    color: FluiColors.text,
+    fontFamily: FluiFonts.inter.semiBold,
+    fontSize: 13,
   },
   addButtonText: {
     color: FluiColors.text,
