@@ -1,7 +1,7 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   Dimensions,
   Keyboard,
@@ -13,7 +13,6 @@ import {
   TextInput,
   View,
 } from "react-native";
-import MapView, { PROVIDER_GOOGLE, type Region } from "react-native-maps";
 import Animated, {
   FadeIn,
   FadeInDown,
@@ -26,12 +25,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Chip } from "@/components/Chip";
 import { FilterSheet } from "@/components/FilterSheet";
+import FluiMap from "@/components/FluiMap";
 import { IntentSelector } from "@/components/IntentSelector";
-import { StationMarker } from "@/components/StationMarker";
 import RechargePoint from "@/components/recharge-point";
 import { StationCardSkeleton } from "@/components/StationCardSkeleton";
 import { countActiveFilters } from "@/constants/filters";
-import { DARK_MAP_STYLE } from "@/constants/map-style";
 import { BorderRadius, FluiColors, FluiFonts, Motion, Spacing } from "@/constants/theme";
 import { useStationFilters } from "@/hooks/use-station-filters";
 import type { Station } from "@/mocks/station";
@@ -43,16 +41,8 @@ const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const SHEET_PEEK = SCREEN_HEIGHT * 0.46;
 const SHEET_EXPANDED = SCREEN_HEIGHT * 0.85;
 
-const REGIAO_INICIAL: Region = {
-  latitude: -23.5735,
-  longitude: -46.6688,
-  latitudeDelta: 0.09,
-  longitudeDelta: 0.09,
-};
-
 export default function SearchScreen() {
   const insets = useSafeAreaInsets();
-  const mapRef = useRef<MapView>(null);
   const reduzirMovimento = useReducedMotion();
 
   const { filters, setFilters, query, setQuery, results, loading, clearFilters } =
@@ -88,23 +78,16 @@ export default function SearchScreen() {
       : withTiming(alvo, { duration: Motion.base });
   }, [expanded, alturaFolha, reduzirMovimento]);
 
-  const focarNoPonto = useCallback(
-    (station: Station) => {
-      setSelectedId(station.id);
-      if (Platform.OS !== "web") {
-        Haptics.selectionAsync().catch(() => {});
-      }
-      mapRef.current?.animateToRegion(
-        {
-          ...station.coordinates,
-          latitudeDelta: 0.02,
-          longitudeDelta: 0.02,
-        },
-        reduzirMovimento ? 0 : 450,
-      );
-    },
-    [reduzirMovimento],
-  );
+  /**
+   * Seleciona o ponto e dá retorno tátil. O movimento de câmera volta a
+   * existir quando a ponte com o mapa (WebView) estiver ligada.
+   */
+  const focarNoPonto = useCallback((station: Station) => {
+    setSelectedId(station.id);
+    if (Platform.OS !== "web") {
+      Haptics.selectionAsync().catch(() => { });
+    }
+  }, []);
 
   const abrirFicha = useCallback((station: Station) => {
     router.push({ pathname: "/ponto-recarga", params: { id: station.id } });
@@ -157,28 +140,16 @@ export default function SearchScreen() {
 
   return (
     <View style={styles.container}>
-      <MapView
-        ref={mapRef}
-        style={StyleSheet.absoluteFill}
-        provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
-        customMapStyle={DARK_MAP_STYLE}
-        initialRegion={REGIAO_INICIAL}
-        showsUserLocation
-        showsMyLocationButton={false}
-        toolbarEnabled={false}
-        onPress={() => setSelectedId(null)}
-      >
-        {ordenados.map(({ station }) => (
-          <StationMarker
-            key={station.id}
-            station={station}
-            selected={station.id === selectedId}
-            onPress={focarNoPonto}
-          />
-        ))}
-      </MapView>
+      <FluiMap
+        stations={ordenados.map((item) => item.station)}
+        selectedId={selectedId}
+        onSelect={(id) => {
+          const alvo = ordenados.find((item) => item.station.id === id);
+          if (alvo) focarNoPonto(alvo.station);
+        }}
+        onClear={() => setSelectedId(null)}
+      />
 
-      {/* ------------------------------ Busca ------------------------------ */}
       <View style={[styles.searchBar, { top: insets.top + Spacing.sm }]}>
         <Pressable
           accessibilityRole="button"
@@ -281,65 +252,65 @@ export default function SearchScreen() {
           <IntentSelector value={intent} onChange={setIntent} />
 
           <View style={styles.listItems}>
-          {loading && (
-            <>
-              <StationCardSkeleton />
-              <StationCardSkeleton />
-              <StationCardSkeleton />
-            </>
-          )}
+            {loading && (
+              <>
+                <StationCardSkeleton />
+                <StationCardSkeleton />
+                <StationCardSkeleton />
+              </>
+            )}
 
-          {!loading && results.length === 0 && (
-            <Animated.View
-              entering={reduzirMovimento ? undefined : FadeInDown.duration(Motion.base)}
-              style={styles.empty}
-            >
-              <MaterialCommunityIcons
-                name="map-marker-off-outline"
-                size={40}
-                color={FluiColors.mutedText}
-              />
-              <Text style={styles.emptyTitle}>Nenhum ponto encontrado</Text>
-              <Text style={styles.emptyText}>
-                Tente ampliar os filtros ou buscar por outro bairro.
-              </Text>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel="Limpar todos os filtros"
-                onPress={() => {
-                  clearFilters();
-                  setQuery("");
-                }}
-                style={({ pressed }) => [styles.emptyButton, pressed && styles.pressed]}
+            {!loading && results.length === 0 && (
+              <Animated.View
+                entering={reduzirMovimento ? undefined : FadeInDown.duration(Motion.base)}
+                style={styles.empty}
               >
-                <Text style={styles.emptyButtonText}>Limpar filtros</Text>
-              </Pressable>
-            </Animated.View>
-          )}
+                <MaterialCommunityIcons
+                  name="map-marker-off-outline"
+                  size={40}
+                  color={FluiColors.mutedText}
+                />
+                <Text style={styles.emptyTitle}>Nenhum ponto encontrado</Text>
+                <Text style={styles.emptyText}>
+                  Tente ampliar os filtros ou buscar por outro bairro.
+                </Text>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="Limpar todos os filtros"
+                  onPress={() => {
+                    clearFilters();
+                    setQuery("");
+                  }}
+                  style={({ pressed }) => [styles.emptyButton, pressed && styles.pressed]}
+                >
+                  <Text style={styles.emptyButtonText}>Limpar filtros</Text>
+                </Pressable>
+              </Animated.View>
+            )}
 
-          {!loading &&
-            ordenados.map((item, index) => (
-              <RechargePoint
-                key={item.station.id}
-                station={item.station}
-                stopEstimate={{
-                  energyKwh: item.energyKwh,
-                  cost: item.cost,
-                  reason: item.reason,
-                }}
-                index={index}
-                selected={item.station.id === selectedId}
-                onPress={(alvo) =>
-                  alvo.id === selectedId ? abrirFicha(alvo) : focarNoPonto(alvo)
-                }
-              />
-            ))}
+            {!loading &&
+              ordenados.map((item, index) => (
+                <RechargePoint
+                  key={item.station.id}
+                  station={item.station}
+                  stopEstimate={{
+                    energyKwh: item.energyKwh,
+                    cost: item.cost,
+                    reason: item.reason,
+                  }}
+                  index={index}
+                  selected={item.station.id === selectedId}
+                  onPress={(alvo) =>
+                    alvo.id === selectedId ? abrirFicha(alvo) : focarNoPonto(alvo)
+                  }
+                />
+              ))}
 
-          {!loading && ordenados.length > 0 && (
-            <Text style={styles.listHint}>
-              Toque uma vez para ver no mapa, duas para abrir a ficha.
-            </Text>
-          )}
+            {!loading && ordenados.length > 0 && (
+              <Text style={styles.listHint}>
+                Toque uma vez para ver no mapa, duas para abrir a ficha.
+              </Text>
+            )}
           </View>
         </ScrollView>
       </Animated.View>

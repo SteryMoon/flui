@@ -54,6 +54,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "c29f8fd9-d246-4532-bffe-dd2d475f7803"
+      }
+    },
+    "owner": "sterlua"
   }
 }
